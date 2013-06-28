@@ -1,2 +1,3 @@
 [
+    { "keys": ["Ctrl+r"], "command": "YACGoToDefinition" }
 ]
