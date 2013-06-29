@@ -1,17 +1,36 @@
 
 import os
 from Class import Class
+from Setting import Setting
 
 
-class CTags:
+class CTags(object):
     def __init__(self, view):
-        self.tagsFile = view.window().folders()[0] + "/.tags"
+        self.view = view
+        self.setting = Setting(self.view)
+        self.folder = None
+        for folder in self.view.window().folders():
+            if folder == self.view.file_name()[:len(folder)]:
+                self.folder = folder
+        if self.folder is None:
+            raise CTagsException('CTags needs a sublime folder to work')
+        self.tagsFile = self.folder + "/.tags" + self.setting.getSyntax()
+        if not os.path.exists(self.tagsFile):
+            raise CTagsException('CTags file not found')
+
+    @staticmethod
+    def rebuild(view):
+        folders = view.window().folders()
+        setting = Setting(view)
+        if len(folders) > 0:
+            for folder in folders:
+                for lang in Setting.getSupportedLanguages():
+                    os.popen(setting.get('ctags_path') + ' -R --languages=' + lang + ' -f "' + folder + '/.tags' + lang + '" "' + folder + '"')
+        else:
+            raise CTagsException('No folders detected')
 
     def getCTagsFileName(self):
         return self.tagsFile
-
-    def cTagsFileExists(self):
-        return os.path.exists(self.tagsFile)
 
     def getClassFromFile(self, searchString):
         if searchString:
@@ -50,3 +69,7 @@ class CTags:
         line.strip()
         line = line[line.find('function')+8:line.find('{')]
         return line.strip()
+
+
+class CTagsException(Exception):
+    pass

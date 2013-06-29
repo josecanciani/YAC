@@ -8,6 +8,10 @@ class Setting:
     def __init__(self, view):
         self.view = view
 
+    @staticmethod
+    def getSupportedLanguages():
+        return ['PHP']
+
     def _getDefaults():
         return sublime.load_settings("YAC.sublime-settings")
 
@@ -31,9 +35,9 @@ class Setting:
         return False
 
     def isSupportedSyntax(self):
-        return self._getSyntax() in ('PHP')
+        return self.getSyntax() in Setting.getSupportedLanguages()
 
-    def _getSyntax(self):
+    def getSyntax(self):
         syntax = self.view.settings().get('syntax')
         if syntax.find('PHP') > 0:
             return 'PHP'

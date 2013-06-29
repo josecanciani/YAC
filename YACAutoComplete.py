@@ -9,24 +9,25 @@ import sublime_plugin
 import sublime
 import os
 from sublime import status_message
-from yac.Class import Class
-from yac.CTags import CTags
-from yac.Setting import Setting
+from yac.Class import *
+from yac.CTags import *
+from yac.Setting import *
 
 
 class YACAutoComplete(sublime_plugin.EventListener):
 
     def on_query_completions(self, view, prefix, locations):
         results = []
-        cTags = CTags(view)
+        try:
+            cTags = CTags(view)
+        except CTagsException as e:
+            status_message('CTags exception: ' + str(e))
+            return results
         setting = Setting(view)
         if not setting.isCompletingMethods() or not view.window().folders():
             return results
         if not setting.isSupportedSyntax():
-            status_message('Auto complete methods not supported for language "' + self._getSyntax(view) + '"')
-            return results
-        if not cTags.cTagsFileExists():
-            status_message('No .tags file found for auto completing methods')
+            status_message('Auto complete methods not supported for language "' + setting.getSyntax() + '"')
             return results
         currentClass = cTags.getClassFromFile(view.file_name()[len(os.path.dirname(cTags.getCTagsFileName()))+1:])
         i = 0

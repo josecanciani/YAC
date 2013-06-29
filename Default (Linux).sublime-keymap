@@ -1,3 +1,4 @@
 [
-    { "keys": ["Ctrl+r"], "command": "YACGoToDefinition" }
+    { "keys": ["Ctrl+r"], "command": "yac_go_to_definition" },
+    { "keys": ["Ctrl+alt+r"], "command": "yac_rebuild_ctags" }
 ]
