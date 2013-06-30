@@ -12,7 +12,7 @@ class Setting:
     def getSupportedLanguages():
         return ['PHP']
 
-    def _getDefaults():
+    def _getDefaults(self):
         return sublime.load_settings("YAC.sublime-settings")
 
     def get(self, key, default=None):
