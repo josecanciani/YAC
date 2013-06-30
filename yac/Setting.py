@@ -3,7 +3,7 @@ import sublime
 import re
 
 
-class Setting:
+class Setting(object):
 
     def __init__(self, view):
         self.view = view

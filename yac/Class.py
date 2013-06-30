@@ -1,6 +1,6 @@
 
 
-class Class:
+class Class(object):
     def __init__(self, className, classFile, parentClassName, parentClassFile=None):
         self.className = className
         self.classFile = classFile

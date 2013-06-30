@@ -5,13 +5,16 @@ from Setting import Setting
 
 
 class CTags(object):
-    def __init__(self, view):
+    def __init__(self, view, folder=None):
         self.view = view
         self.setting = Setting(self.view)
-        self.folder = None
-        for folder in self.view.window().folders():
-            if folder == self.view.file_name()[:len(folder)]:
-                self.folder = folder
+        if folder is None:
+            self.folder = None
+            for folder in self.view.window().folders():
+                if folder == self.view.file_name()[:len(folder)]:
+                    self.folder = folder
+        else:
+            self.folder = folder
         if self.folder is None:
             raise CTagsException('CTags needs a sublime folder to work')
         self.tagsFile = self.folder + "/.tags" + self.setting.getSyntax()
@@ -19,8 +22,11 @@ class CTags(object):
             raise CTagsException('CTags file not found')
 
     @staticmethod
-    def rebuild(view):
-        folders = view.window().folders()
+    def rebuild(view, folder=None):
+        if folder is None:
+            folders = view.window().folders()
+        else:
+            folders = [folder]
         setting = Setting(view)
         if len(folders) > 0:
             for folder in folders:

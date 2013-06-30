@@ -1,4 +1,5 @@
 [
     { "keys": ["Ctrl+r"], "command": "yac_go_to_definition" },
-    { "keys": ["Ctrl+alt+r"], "command": "yac_rebuild_ctags" }
+    { "keys": ["Ctrl+alt+r"], "command": "yac_rebuild_ctags" },
+    { "keys": ["Ctrl+alt+t"], "command": "yac_run_tests" }
 ]

@@ -1,0 +1,4 @@
+<?php
+
+$pp = new TestClass();
+

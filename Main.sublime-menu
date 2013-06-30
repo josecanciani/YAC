@@ -1,0 +1,49 @@
+[
+    {
+        "id": "find",
+        "children":
+        [
+              {
+                "caption": "-",
+                "id": "find_yac"
+              },
+              {
+                "command": "yac_go_to_definition",
+                "caption": "Go to definition"
+              } 
+        ]
+    },
+    {
+        "id": "tools",
+        "caption": "Tools",
+        "children":
+        [
+            {
+                "id": "packages",
+                "caption": "Packages",
+                "children":
+                [                    
+                    {
+                        "caption": "YAC",
+                        "id": "yac_tools",
+                        "children":
+                        [
+                            {
+                                "command": "yac_rebuild_ctags",
+                                "caption": "Rebuild CTags files"
+                            },
+                            {
+                                "command": "yac_go_to_definition",
+                                "caption": "Go to definition"
+                            },
+                            {
+                                "command": "yac_run_tests",
+                                "caption": "Run tests (for developers)"
+                            } 
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
