@@ -1,12 +1,17 @@
 
 import unittest
+from Setting import *
 from CTags import *
+import os
 
 
-class TestCTags(unittest.TestCase):
+class CTags_test(unittest.TestCase):
 
     def test_createCTagsFile(self):
-        self.assertEqual(1, 1)
+        testFolder = os.path.join(Setting.getProjectPath(), 'resources')
+        CTags.rebuild(None, testFolder)
+        for lang in Setting.getSupportedLanguages():
+            self.assertEqual(os.path.exists(os.path.join(testFolder, '.tags' + lang)), True)
 
 if __name__ == '__main__':
     unittest.main()

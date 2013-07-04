@@ -1,12 +1,17 @@
 
 import sublime
 import re
+import os
 
 
 class Setting(object):
 
     def __init__(self, view):
         self.view = view
+
+    @staticmethod
+    def getProjectPath():
+        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     @staticmethod
     def getSupportedLanguages():

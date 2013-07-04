@@ -31,7 +31,19 @@ class CTags(object):
         if len(folders) > 0:
             for folder in folders:
                 for lang in Setting.getSupportedLanguages():
-                    os.popen(setting.get('ctags_path') + ' -R --languages=' + lang + ' -f "' + folder + '/.tags' + lang + '" "' + folder + '"')
+                    if os.path.exists(setting.get('ctags_path')):
+                        cTagsBinary = setting.get('ctags_path')
+                    else:
+                        # hack for mac testing, during unit tests we cannot load view settings (for now)
+                        if os.path.exists('/opt/local/bin/ctags'):
+                            cTagsBinary = '/opt/local/bin/ctags'
+                        else:
+                            raise CTagsException('YAC: ctags binary not found')
+                    cTagsFile = os.path.join(folder, '.tags' + lang)
+                    if os.path.exists(cTagsFile):
+                        os.remove(cTagsFile)
+                    cmd = cTagsBinary + ' -R --languages=' + lang + ' -f "' + cTagsFile + '" "' + folder + '"'
+                    os.popen(cmd)
         else:
             raise CTagsException('No folders detected')
 
