@@ -5,13 +5,12 @@ from CTags import *
 import os
 
 
-class CTags_test(unittest.TestCase):
+class CTagsTest(unittest.TestCase):
 
     def test_createCTagsFile(self):
-        testFolder = os.path.join(Setting.getProjectPath(), 'resources')
-        CTags.rebuild(None, testFolder)
+        CTags.rebuild(None, Setting.getResourcesPath())
         for lang in Setting.getSupportedLanguages():
-            self.assertEqual(os.path.exists(os.path.join(testFolder, '.tags' + lang)), True)
+            self.assertEqual(os.path.exists(os.path.join(Setting.getResourcesPath(), '.tags' + lang)), True)
 
 if __name__ == '__main__':
     unittest.main()

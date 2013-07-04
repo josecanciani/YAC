@@ -14,6 +14,10 @@ class Setting(object):
         return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
     @staticmethod
+    def getResourcesPath():
+        return os.path.join(Setting.getProjectPath(), 'resources')
+
+    @staticmethod
     def getSupportedLanguages():
         return ['PHP']
 
