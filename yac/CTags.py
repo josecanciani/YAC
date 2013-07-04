@@ -1,6 +1,7 @@
 
 import os
 from Class import Class
+from Method import Method
 from Setting import Setting
 
 
@@ -68,19 +69,37 @@ class CTags(object):
                 parentClassName = None
             return Class(className, classFileName, parentClassName)
 
-    def getMethodsFromClass(self, prefix, searchClass):
+    def _getMethodsFromClass(self, searchClass, prefix=None):
         results = []
-        f = os.popen("grep '^" + prefix + "' '" + self.tagsFile + "' | grep -F \"\t" + searchClass.getClassFile() + "\t\" | grep \"f$\"")
+        cmd = ''
+        if prefix:
+            cmd = "grep '^" + prefix + "' '" + self.tagsFile + "' | grep -F \"\t" + searchClass.getClassFile() + "\t\" | grep \"f$\""
+        else:
+            cmd = "grep -F \"\t" + searchClass.getClassFile() + "\t\" " + self.tagsFile + " | grep \"f$\""
+        f = os.popen(cmd)
         for i in f.readlines():
-            symbol = self._extractFunction(i)
-            results.append(symbol)
+            results.append(self._extractMethod(i, searchClass))
         return results
 
-    def _extractFunction(self, tagsLine):
+    def _extractMethod(self, tagsLine, classObject):
+        name = tagsLine[:tagsLine.find("\t")-1]
         line = tagsLine[tagsLine.find('/^')+2:tagsLine.find('$/;"')]
         line.strip()
         line = line[line.find('function')+8:line.find('{')]
-        return line.strip()
+        method = Method(name, classObject, line)
+        return method
+
+    def getMethodsFromClass(self, currentClass, prefix=None):
+        results = []
+        i = 0
+        while isinstance(currentClass, Class) and currentClass.classExists():
+            i = i + 1
+            if i > 10:
+                raise Exception('YAC: Recursion limit reached')
+            for result in self._getMethodsFromClass(currentClass, prefix):
+                results.append(result)
+            currentClass = self.getClassFromName(currentClass.getParentClassName())
+        return results
 
 
 class CTagsException(Exception):

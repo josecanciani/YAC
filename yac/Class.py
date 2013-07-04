@@ -1,4 +1,6 @@
 
+import os
+
 
 class Class(object):
     def __init__(self, className, classFile, parentClassName, parentClassFile=None):
@@ -18,3 +20,11 @@ class Class(object):
 
     def getClassFile(self):
         return self.classFile
+
+    def getDefinitionLineNumber(self):
+        cmd = "grep -n -F 'class " + self.getClassName() + "' \"" + self.getClassFile() + "\""
+        f = os.popen(cmd)
+        for i in f.readlines():
+            if i.find(':') > 0:
+                return i[:i.find(':')]
+        return '1'

@@ -30,18 +30,11 @@ class YACAutoComplete(sublime_plugin.EventListener):
         if not setting.isSupportedSyntax():
             status_message('YAC: auto complete not supported for language "' + setting.getSyntax() + '"')
             return results
-        i = 0
         currentClass = cTags.getClassFromName(parser.getClassFromMethodInCurrentPosition())
-        while isinstance(currentClass, Class) and currentClass.classExists():
-            i = i + 1
-            if i > 10:
-                raise Exception('Recursion limit reached')
-            for result in cTags.getMethodsFromClass(prefix, currentClass):
-                results.append(result)
-            currentClass = cTags.getClassFromName(currentClass.getParentClassName())
+        results = cTags.getMethodsFromClass(currentClass, prefix)
 
         if len(results):
-            results = [(result, result.replace('$', '\$')) for result in results]
+            results = [(result.getDefinitionLine().strip(), result.getDefinitionLine.strip().replace('$', '\$')) for result in results]
             return (results, sublime.INHIBIT_EXPLICIT_COMPLETIONS)
         else:
             return results

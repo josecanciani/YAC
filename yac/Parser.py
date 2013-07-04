@@ -16,6 +16,10 @@ class Parser(object):
         else:
             self.position = position
 
+    def getCurrentPositionSymbol(self):
+        point = self.view.word(self.view.sel()[0])
+        return self.view.substr(point)
+
     def isCurrentPositionAMethod(self):
         words = re.split('(\W+)', self.text[:self.position])
         if len(words) > 1:
