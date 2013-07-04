@@ -18,9 +18,6 @@ class YacRunTestsCommand(sublime_plugin.TextCommand):
             status_message('YAC unit tests run: errors found, see the console for details')
 
     def _findTests(self):
-        fileList = ['yac.CTags_test']
-        return fileList
-        # FIXME: why this stop giving results when changing a test.py file?
         fileList = []
         for root, subFolders, files in os.walk(os.path.join(Setting.getProjectPath(), 'yac')):
             for file in files:

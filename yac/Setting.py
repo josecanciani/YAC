@@ -1,7 +1,7 @@
 
 import sublime
-import re
 import os
+from Parser import *
 
 
 class Setting(object):
@@ -11,7 +11,7 @@ class Setting(object):
 
     @staticmethod
     def getProjectPath():
-        return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        return os.path.join(sublime.packages_path(), 'YAC')
 
     @staticmethod
     def getResourcesPath():
@@ -32,16 +32,6 @@ class Setting(object):
         except:
             pass
         return self._getDefaults().get(key, default)
-
-    def isCompletingMethods(self):
-        wholeRegion = sublime.Region(0, self.view.size())
-        pos = self.view.sel()[0].begin()
-        text = self.view.substr(wholeRegion)
-        words = re.split('(\W+)', text[:pos])
-        if len(words) > 1:
-            if words[len(words)-2] in ('->', '.', '::'):
-                return True
-        return False
 
     def isSupportedSyntax(self):
         return self.getSyntax() in Setting.getSupportedLanguages()

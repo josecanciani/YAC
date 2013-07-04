@@ -7,11 +7,11 @@
 
 import sublime_plugin
 import sublime
-import os
 from sublime import status_message
 from yac.Class import *
 from yac.CTags import *
 from yac.Setting import *
+from yac.Parser import *
 
 
 class YACAutoComplete(sublime_plugin.EventListener):
@@ -21,16 +21,17 @@ class YACAutoComplete(sublime_plugin.EventListener):
         try:
             cTags = CTags(view)
         except CTagsException as e:
-            status_message('CTags exception: ' + str(e))
+            status_message('YAC: CTags exception: ' + str(e))
             return results
         setting = Setting(view)
-        if not setting.isCompletingMethods() or not view.window().folders():
+        parser = Parser(view)
+        if not parser.isCurrentPositionAMethod() or not view.window().folders():
             return results
         if not setting.isSupportedSyntax():
-            status_message('Auto complete methods not supported for language "' + setting.getSyntax() + '"')
+            status_message('YAC: auto complete not supported for language "' + setting.getSyntax() + '"')
             return results
-        currentClass = cTags.getClassFromFile(view.file_name()[len(os.path.dirname(cTags.getCTagsFileName()))+1:])
         i = 0
+        currentClass = cTags.getClassFromName(parser.getClassFromMethodInCurrentPosition())
         while isinstance(currentClass, Class) and currentClass.classExists():
             i = i + 1
             if i > 10:

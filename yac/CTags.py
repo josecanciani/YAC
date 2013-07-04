@@ -50,12 +50,6 @@ class CTags(object):
     def getCTagsFileName(self):
         return self.tagsFile
 
-    def getClassFromFile(self, searchString):
-        if searchString:
-            return self._getClass("grep -F '" + searchString + "' '" + self.tagsFile + "' | grep \"c$\"")
-        else:
-            return None
-
     def getClassFromName(self, searchString):
         if searchString:
             return self._getClass("grep \"^" + searchString + "\" '" + self.tagsFile + "' | grep \"c$\"")
