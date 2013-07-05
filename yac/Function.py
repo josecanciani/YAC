@@ -2,24 +2,24 @@
 import os
 
 
-class Method(object):
+class Function(object):
 
-    def __init__(self, name, classObject, definitionLine):
+    def __init__(self, name, file, definitionLine):
         self.name = name
-        self.classObject = classObject
+        self.file = file
         self.definitionLine = definitionLine
 
     def getName(self):
         return self.name
 
-    def getClass(self):
-        return self.classObject
+    def getFile(self):
+        return self.file
 
     def getDefinitionLine(self):
         return self.definitionLine
 
     def getDefinitionLineNumber(self):
-        cmd = "grep -n -F '" + self.getDefinitionLine().replace("'", "\\'").strip() + "' \"" + self.getClass().getFile() + "\""
+        cmd = "grep -n -F '" + self.getDefinitionLine().replace("'", "\\'").strip() + "' \"" + self.getFile() + "\""
         f = os.popen(cmd)
         for i in f.readlines():
             if i.find(':') > 0:

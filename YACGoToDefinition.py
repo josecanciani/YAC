@@ -14,22 +14,38 @@ from yac.Class import *
 class YacGoToDefinitionCommand(sublime_plugin.TextCommand):
 
     def run(self, edit):
-        window = sublime.active_window()
-        parser = Parser(self.view)
-        word = parser.getCurrentPositionSymbol()
+        self.parser = Parser(self.view)
+        word = self.parser.getCurrentPositionSymbol()
         try:
-            cTags = CTags(self.view)
+            self.cTags = CTags(self.view)
         except CTagsException as e:
             status_message('YAC: CTags exception: ' + str(e))
         if len(word) > 0:
-            if parser.isCurrentPositionAMethod():
-                currentClass = cTags.getClassFromName(parser.getClassFromMethodInCurrentPosition())
+            if self.parser.isCurrentPositionAMethod():
+                currentClass = self.cTags.getClassFromName(self.parser.getClassFromMethodInCurrentPosition())
                 if currentClass:
-                    results = cTags.getMethodsFromClass(currentClass, word)
+                    results = self.cTags.getMethodsFromClass(currentClass, word)
                     if len(results) > 0:
-                        window.open_file(results[0].getClass().getClassFile() + ':' + results[0].getDefinitionLineNumber(), sublime.ENCODED_POSITION)
-            if word[0].isupper():
-                searchClass = cTags.getClassFromName(word)
-                if searchClass:
-                    window.open_file(searchClass.getClassFile() + ':' + searchClass.getDefinitionLineNumber(), sublime.ENCODED_POSITION)
+                        self.showQuickPanel(results)
+                        return
+            if self.parser.isCurrentPositionAFunction():
+                results = self.cTags.getFunctionsFromName(word)
+                if len(results) > 0:
+                    self.showQuickPanel(results)
+                    return
+            results = self.cTags.getClassesFromName(word)
+            if len(results) > 0:
+                self.showQuickPanel(results)
+                return
         status_message('YAC: current symbol not found')
+
+    def showQuickPanel(self, items):
+        self.items = items
+        if len(items) == 1:
+            self.goToItem(0)
+        else:
+            sublime.active_window().show_quick_panel([[item.getName(), self.cTags.getRelativeFilePath(item.getFile())] for item in self.items], self.goToItem)
+
+    def goToItem(self, idx):
+        if idx >= 0:
+            sublime.active_window().open_file(self.items[idx].getFile() + ':' + self.items[idx].getDefinitionLineNumber(), sublime.ENCODED_POSITION)

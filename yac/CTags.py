@@ -2,6 +2,7 @@
 import os
 from Class import Class
 from Method import Method
+from Function import Function
 from Setting import Setting
 
 
@@ -48,17 +49,24 @@ class CTags(object):
         else:
             raise CTagsException('No folders detected')
 
-    def getCTagsFileName(self):
-        return self.tagsFile
+    def getRelativeFilePath(self, filePath):
+        return filePath[len(os.path.dirname(self.tagsFile))+1:]
 
     def getClassFromName(self, searchString):
         if searchString:
-            return self._getClass("grep \"^" + searchString + "\" '" + self.tagsFile + "' | grep \"c$\"")
+            return self._getClasses(searchString)[0]
         else:
             return None
 
-    def _getClass(self, cmd):
-        f = os.popen(cmd)
+    def getClassesFromName(self, searchString):
+        if searchString:
+            return self._getClasses(searchString)
+        else:
+            return []
+
+    def _getClasses(self, searchString):
+        results = []
+        f = os.popen("grep \"^" + searchString + "\" '" + self.tagsFile + "' | grep \"c$\"")
         for i in f.readlines():
             className = i[:i.find("\t")]
             classFileName = i[i.find("\t")+1:i.find("\t", i.find("\t") + 1)]
@@ -67,15 +75,16 @@ class CTags(object):
                 parentClassName = line[line.find('extends')+7:].strip().split()[0]
             else:
                 parentClassName = None
-            return Class(className, classFileName, parentClassName)
+            results.append(Class(className, classFileName, parentClassName))
+        return results
 
     def _getMethodsFromClass(self, searchClass, prefix=None):
         results = []
         cmd = ''
         if prefix:
-            cmd = "grep '^" + prefix + "' '" + self.tagsFile + "' | grep -F \"\t" + searchClass.getClassFile() + "\t\" | grep \"f$\""
+            cmd = "grep '^" + prefix + "' '" + self.tagsFile + "' | grep -F \"\t" + searchClass.getFile() + "\t\" | grep \"f$\""
         else:
-            cmd = "grep -F \"\t" + searchClass.getClassFile() + "\t\" " + self.tagsFile + " | grep \"f$\""
+            cmd = "grep -F \"\t" + searchClass.getFile() + "\t\" " + self.tagsFile + " | grep \"f$\""
         f = os.popen(cmd)
         for i in f.readlines():
             results.append(self._extractMethod(i, searchClass))
@@ -99,6 +108,16 @@ class CTags(object):
             for result in self._getMethodsFromClass(currentClass, prefix):
                 results.append(result)
             currentClass = self.getClassFromName(currentClass.getParentClassName())
+        return results
+
+    def getFunctionsFromName(self, name):
+        results = []
+        f = os.popen("grep \"^" + name + "\" '" + self.tagsFile + "' | grep \"f$\"")
+        for i in f.readlines():
+            functionName = i[:i.find("\t")]
+            functionFileName = i[i.find("\t")+1:i.find("\t", i.find("\t") + 1)]
+            line = i[i.find('/^')+2:i.find('$/;"')]
+            results.append(Function(functionName, functionFileName, line))
         return results
 
 

@@ -32,7 +32,6 @@ class YACAutoComplete(sublime_plugin.EventListener):
             return results
         currentClass = cTags.getClassFromName(parser.getClassFromMethodInCurrentPosition())
         results = cTags.getMethodsFromClass(currentClass, prefix)
-
         if len(results):
             results = [(result.getDefinitionLine().strip(), result.getDefinitionLine.strip().replace('$', '\$')) for result in results]
             return (results, sublime.INHIBIT_EXPLICIT_COMPLETIONS)

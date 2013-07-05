@@ -27,6 +27,13 @@ class Parser(object):
                 return True
         return False
 
+    def isCurrentPositionAFunction(self):
+        words = re.split('(\W+)', self.text[:self.position])
+        if len(words) > 2:
+            if len(words[len(words)-2]) > 0 and words[len(words)-2][-1:].isspace():
+                return True
+        return False
+
     def getClassFromMethodInCurrentPosition(self):
         words = [word.strip() for word in re.split('(\W+)', self.text[:self.position]) if word.strip() and word.strip() != '$']  # remove $ from php variables
         if len(words) > 1:

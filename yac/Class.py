@@ -12,17 +12,17 @@ class Class(object):
     def classExists(self):
         return len(self.className) > 0
 
-    def getClassName(self):
+    def getName(self):
         return self.className
 
     def getParentClassName(self):
         return self.parentClassName
 
-    def getClassFile(self):
+    def getFile(self):
         return self.classFile
 
     def getDefinitionLineNumber(self):
-        cmd = "grep -n -F 'class " + self.getClassName() + "' \"" + self.getClassFile() + "\""
+        cmd = "grep -n -F 'class " + self.getName() + "' \"" + self.getFile() + "\""
         f = os.popen(cmd)
         for i in f.readlines():
             if i.find(':') > 0:
