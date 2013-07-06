@@ -15,6 +15,9 @@ class Method(object):
     def getClass(self):
         return self.classObject
 
+    def getFile(self):
+        return self.getClass().getFile()
+
     def getDefinitionLine(self):
         return self.definitionLine
 

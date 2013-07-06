@@ -7,40 +7,33 @@ from Setting import Setting
 
 
 class CTags(object):
-    def __init__(self, view, folder=None):
+    def __init__(self, view):
         self.view = view
         self.setting = Setting(self.view)
-        if folder is None:
-            self.folder = None
-            for folder in self.view.window().folders():
-                if folder == self.view.file_name()[:len(folder)]:
-                    self.folder = folder
-        else:
-            self.folder = folder
+        self.folder = None
+        for folder in self.view.window().folders():
+            if folder == self.view.file_name()[:len(folder)]:
+                self.folder = folder
+                break
         if self.folder is None:
             raise CTagsException('CTags needs a sublime folder to work')
         self.tagsFile = self.folder + "/.tags" + self.setting.getSyntax()
         if not os.path.exists(self.tagsFile):
-            raise CTagsException('CTags file not found')
+            raise CTagsException('CTags file not found: ' + self.tagsFile)
 
     @staticmethod
-    def rebuild(view, folder=None):
-        if folder is None:
-            folders = view.window().folders()
-        else:
-            folders = [folder]
-        setting = Setting(view)
+    def rebuild(view):
+        folders = view.window().folders()
         if len(folders) > 0:
             for folder in folders:
                 for lang in Setting.getSupportedLanguages():
-                    if os.path.exists(setting.get('ctags_path')):
-                        cTagsBinary = setting.get('ctags_path')
-                    else:
-                        # hack for mac testing, during unit tests we cannot load view settings (for now)
-                        if os.path.exists('/opt/local/bin/ctags'):
-                            cTagsBinary = '/opt/local/bin/ctags'
-                        else:
-                            raise CTagsException('YAC: ctags binary not found')
+                    cTagsBinary = None
+                    if os.path.exists('/usr/bin/ctags'):
+                        cTagsBinary = '/usr/bin/ctags'
+                    if os.path.exists('/opt/local/bin/ctags'):
+                        cTagsBinary = '/opt/local/bin/ctags'
+                    if cTagsBinary is None:
+                        raise CTagsException('YAC: ctags binary not found')
                     cTagsFile = os.path.join(folder, '.tags' + lang)
                     if os.path.exists(cTagsFile):
                         os.remove(cTagsFile)

@@ -20,6 +20,7 @@ class YacGoToDefinitionCommand(sublime_plugin.TextCommand):
             self.cTags = CTags(self.view)
         except CTagsException as e:
             status_message('YAC: CTags exception: ' + str(e))
+            return
         if len(word) > 0:
             if self.parser.isCurrentPositionAMethod():
                 currentClass = self.cTags.getClassFromName(self.parser.getClassFromMethodInCurrentPosition())

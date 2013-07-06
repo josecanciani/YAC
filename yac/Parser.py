@@ -1,6 +1,5 @@
 
 import re
-import sublime
 
 
 class Parser(object):
@@ -8,7 +7,8 @@ class Parser(object):
     def __init__(self, view, text=None, position=None):
         self.view = view
         if text is None:
-            self.text = self.view.substr(sublime.Region(0, self.view.size()))
+            from sublime import Region
+            self.text = self.view.substr(Region(0, self.view.size()))
         else:
             self.text = text
         if position is None:
