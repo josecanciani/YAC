@@ -1,8 +1,8 @@
 
 import os
 import unittest
+from yac.Setting import Setting
 from yac.mock.View import View
-from yac.mock.Setting import Setting
 
 if __name__ == '__main__':
 
