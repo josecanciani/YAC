@@ -1,20 +1,17 @@
 
 import re
+try:
+    from sublime import Region
+except ImportError:
+    from mock.Region import Region
 
 
 class Parser(object):
 
-    def __init__(self, view, text=None, position=None):
+    def __init__(self, view):
         self.view = view
-        if text is None:
-            from sublime import Region
-            self.text = self.view.substr(Region(0, self.view.size()))
-        else:
-            self.text = text
-        if position is None:
-            self.position = self.view.sel()[0].begin()
-        else:
-            self.position = position
+        self.text = self.view.substr(Region(0, self.view.size()))
+        self.position = self.view.sel()[0].begin()
 
     def getCurrentPositionSymbol(self):
         point = self.view.word(self.view.sel()[0])

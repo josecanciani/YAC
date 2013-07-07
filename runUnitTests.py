@@ -6,7 +6,7 @@ from yac.mock.View import View
 
 if __name__ == '__main__':
 
-    view = View(os.path.join(Setting.getResourcesPath(), 'test.php'), Setting.getResourcesPath())
+    view = View(Setting.getResourcesPath(), os.path.join(Setting.getResourcesPath(), 'test.php'))
     setting = Setting(view)
 
     fileList = []

@@ -2,14 +2,15 @@
 import os
 import unittest
 from CTags import *
+from Parser import *
 from Setting import Setting
 from mock.View import *
 
 
-class CTagsTest(unittest.TestCase):
+class PHPTest(unittest.TestCase):
 
     def setUp(self):
-        self.view = View(os.path.join(Setting.getResourcesPath(), 'test.php'), Setting.getResourcesPath())
+        self.view = View(Setting.getResourcesPath(), os.path.join(Setting.getResourcesPath(), 'test.php'))
         self.setting = Setting(self.view)
         self.cTags = CTags(self.view)
 
@@ -21,3 +22,6 @@ class CTagsTest(unittest.TestCase):
     def test_getClassFromName(self):
         testClass = self.cTags.getClassFromName('TestClass')
         self.assertEqual('TestClass', testClass.getName())
+
+    def test_goToClass(self):
+        pass  # parser = Parser(self.view,
