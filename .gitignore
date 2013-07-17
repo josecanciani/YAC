@@ -1,2 +1,4 @@
 *.pyc
 .tags*
+yac/os
+yac/unittest

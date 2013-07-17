@@ -59,7 +59,7 @@ class CTags(object):
 
     def _getClasses(self, searchString):
         results = []
-        f = os.popen("grep \"^" + searchString + "\" '" + self.tagsFile + "' | grep \"c$\"")
+        f = os.popen("grep \"^" + searchString + "\" '" + self.tagsFile + "' | grep \"[c|i]$\"")
         for i in f.readlines():
             className = i[:i.find("\t")]
             classFileName = i[i.find("\t")+1:i.find("\t", i.find("\t") + 1)]
